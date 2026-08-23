@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Elige tus Juegos</title>
+  <style>
+    :root {
+      --bg-main: #0d1117;
+      --bg-card: #161b22;
+      --bg-card-inner: #21262d;
+      --btn-blue: #58a6ff;
+      --btn-green: #238636;
+      --btn-remove: #da3633;
+      --text-main: #f0f6fc;
+      --text-sub: #58a6ff;
+      --text-muted: #8b949e;
+      --border-color: #30363d;
+      --bar-bg: #21262d;
+      --bar-over: #da3633;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      padding: 16px 12px 240px 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .step-header {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: var(--text-main);
+    }
+
+    /* VISTA 1: TARJETAS SD */
+    .sd-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .sd-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 20px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .sd-card:active {
+      transform: scale(0.95);
+      border-color: var(--btn-blue);
+    }
+
+    .sd-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .sd-card span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* VISTA 2: GRID 2X2 */
+    .games-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* ANIMACIÓN POP */
+    @keyframes popBounce {
+      0% { transform: scale(1); }
+      30% { transform: scale(0.88); }
+      60% { transform: scale(1.10); }
+      80% { transform: scale(0.96); }
+      100% { transform: scale(1); }
+    }
+
+    .game-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .game-card.popping {
+      animation: popBounce 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .game-card.selected {
+      border-color: #58a6ff;
+      box-shadow: 0 0 16px rgba(88, 166, 255, 0.4);
+    }
+
+    /* CONTENEDOR PROPORCIÓN NINTENDO SWITCH */
+    .game-photo-box {
+      width: 100%;
+      aspect-ratio: 3 / 5;
+      background: var(--bg-card-inner);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .game-photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .game-photo-placeholder {
+      color: #6e7681;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 6px;
+    }
+
+    .game-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .game-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .game-size-text {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      font-weight: 500;
+    }
+
+    /* BOTONES */
+    .btn-card {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-card:active {
+      transform: scale(0.92);
+    }
+
+    .btn-add {
+      background: #60c5ff;
+      color: #0d1117;
+    }
+
+    .btn-remove {
+      background: var(--btn-remove);
+      color: #ffffff;
+    }
+
+    /* MODAL FLOTANTE INFERIOR */
+    .floating-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #161b22;
+      border-top: 1px solid var(--border-color);
+      border-radius: 20px 20px 0 0;
+      padding: 18px 16px 20px 16px;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .sheet-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .sheet-row .label {
+      color: var(--text-main);
+    }
+
+    .sheet-row .val {
+      color: var(--text-main);
+    }
+
+    .sheet-progress-container {
+      width: 100%;
+      height: 7px;
+      background: #21262d;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 12px 0 10px 0;
+    }
+
+    .sheet-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #238636;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    .sheet-progress-bar.over {
+      background: var(--bar-over);
+    }
+
+    .sheet-status-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .btn-whatsapp {
+      width: 100%;
+      background: #2ea043;
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-whatsapp:active {
+      background: #238636;
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- PASO 1: SELECCIONAR MEMORIA -->
+  <section id="step1">
+    <div class="step-header">1. Selecciona tu MicroSD</div>
+    <div class="sd-grid">
+      <div class="sd-card" onclick="selectSD(119, '128 GB')">
+        <h3>128 GB</h3>
+        <span>~119 GB útiles</span>
+      </div>
+      <div class="sd-card" onclick="selectSD(238, '256 GB')">
+        <h3>256 GB</h3>
+        <span>~238 GB útiles</span>
+      </div>
+      <div class="sd-card" onclick="selectSD(476, '512 GB')">
+        <h3>512 GB</h3>
+        <span>~476 GB útiles</span>
+      </div>
+      <div class="sd-card" onclick="selectSD(953, '1 TB')">
+        <h3>1 TB</h3>
+        <span>~953 GB útiles</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PASO 2: ELIGE TUS JUEGOS (2X2) -->
+  <section id="step2" class="hidden">
+    <div class="step-header">2. Elige tus juegos</div>
+    <div class="games-grid" id="gamesGrid"></div>
+  </section>
+</div>
+
+<!-- MODAL FLOTANTE INFERIOR -->
+<div class="floating-sheet">
+  <div class="sheet-row">
+    <span class="label">Memoria:</span>
+    <span class="val" id="labelMemory">No seleccionada</span>
+  </div>
+  <div class="sheet-row">
+    <span class="label">Espacio utilizado:</span>
+    <span class="val" id="labelUsed">0 GB</span>
+  </div>
+  <div class="sheet-row">
+    <span class="label">Espacio disponible:</span>
+    <span class="val" id="labelAvail">—</span>
+  </div>
+
+  <div class="sheet-progress-container">
+    <div class="sheet-progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="sheet-status-text" id="statusText">No hay juegos seleccionados.</div>
+
+  <button class="btn-whatsapp" onclick="sendWhatsApp()">
+    Enviar selección por WhatsApp
+  </button>
+</div>
+
+<script>
+  const games = [
+    { id: 1, name: "Capcom Fighting Collection 2", size: 5.0, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/BEDTB/front.png" },
+    { id: 2, name: "Donkey Kong Country Returns", size: 6.8, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/BDLWA/front.png" },
+    { id: 3, name: "DOOM", size: 21.3, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/AF3BA/front.png" },
+    { id: 4, name: "DOOM Eternal", size: 29.8, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/A6SVA/front.png" },
+    { id: 5, name: "Hades 2", size: 4.5, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/AY9RA/front.png" },
+    { id: 6, name: "Hollow Knight: Silksong", size: 6.0, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/AKLHA/front.png" },
+    { id: 7, name: "Mario Kart 8 Deluxe", size: 11.2, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/AABPA/front.png" },
+    { id: 8, name: "Mario Strikers: Battle League", size: 3.0, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/AWN6A/front.png" },
+    { id: 9, name: "Mario Tennis Aces", size: 2.0, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/ALERA/front.png" },
+    { id: 10, name: "Marvel Cosmic Invasion", size: 10.5, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_S7fcfcZgXglksVlzx_9RmQVQ6_vHsbU_UUf2zayYEA&s=10" },
+    { id: 11, name: "Metroid Dread", size: 4.4, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/AYL8A/front.png" },
+    { id: 12, name: "Minecraft", size: 1.5, img: "img/12.jpg" },
+    { id: 13, name: "Mortal Kombat: Legacy Kollection", size: 6.0, img: "img/13.jpg" },
+    { id: 14, name: "Nine Sols", size: 4.5, img: "img/14.jpg" },
+    { id: 15, name: "Ninja Gaiden: Ragebound", size: 5.5, img: "img/15.jpg" },
+    { id: 16, name: "OVERPASS", size: 5.1, img: "img/16.jpg" },
+    { id: 17, name: "PAC-MAN WORLD 2 Re-PAC", size: 3.5, img: "img/17.jpg" },
+    { id: 18, name: "Pokémon Let's Go, Pikachu!", size: 4.2, img: "img/18.jpg" },
+    { id: 19, name: "Pokémon Sword", size: 12.8, img: "img/19.jpg" },
+    { id: 20, name: "Resident Evil 4", size: 12.0, img: "img/20.jpg" },
+    { id: 21, name: "Scott Pilgrim vs. The World: The Game", size: 1.2, img: "img/21.jpg" },
+    { id: 22, name: "Sonic Racing: CrossWorlds", size: 8.5, img: "img/22.jpg" },
+    { id: 23, name: "Super Mario Bros. Wonder", size: 3.6, img: "img/23.jpg" },
+    { id: 24, name: "Super Mario Galaxy", size: 3.8, img: "img/24.jpg" },
+    { id: 25, name: "Super Mario Galaxy 2", size: 4.1, img: "img/25.jpg" },
+    { id: 26, name: "Super Mario Odyssey", size: 5.7, img: "img/26.jpg" },
+    { id: 27, name: "Super Mario Party Jamboree", size: 6.5, img: "img/27.jpg" },
+    { id: 28, name: "Super Mario RPG", size: 6.5, img: "img/28.jpg" },
+    { id: 29, name: "Teenage Mutant Ninja Turtles: Mutants Unleashed", size: 7.8, img: "img/29.jpg" },
+    { id: 30, name: "The House of the Dead 2: Remake", size: 4.0, img: "img/30.jpg" },
+    { id: 31, name: "World War Z", size: 6.9, img: "img/31.jpg" },
+    { id: 32, name: "Yoshi's Crafted World", size: 5.3, img: "img/32.jpg" }
+  ];
+
+  let maxStorage = 0;
+  let currentCapacityLabel = "No seleccionada";
+  let selectedGames = new Set();
+
+  function selectSD(gbLimit, label) {
+    maxStorage = gbLimit;
+    currentCapacityLabel = label;
+    selectedGames.clear();
+
+    document.getElementById("step1").classList.add("hidden");
+    document.getElementById("step2").classList.remove("hidden");
+
+    renderGamesInitial();
+    updateUI();
+  }
+
+  function renderGamesInitial() {
+    const container = document.getElementById("gamesGrid");
+    container.innerHTML = "";
+
+    games.forEach(game => {
+      const card = document.createElement("div");
+      card.className = "game-card";
+      card.id = `card-${game.id}`;
+
+      card.innerHTML = `
+        <div class="game-photo-box">
+          <img src="${game.img}" alt="${game.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="game-photo-placeholder" style="display: none;">FOTO DEL JUEGO</div>
+        </div>
+        <div class="game-info">
+          <div class="game-name">${game.name}</div>
+          <div class="game-size-text">${game.size.toFixed(1)} GB</div>
+        </div>
+        <button id="btn-${game.id}" class="btn-card btn-add" onclick="toggleGame(${game.id})">
+          Agregar
+        </button>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function toggleGame(gameId) {
+    const card = document.getElementById(`card-${gameId}`);
+    const btn = document.getElementById(`btn-${gameId}`);
+
+    if (selectedGames.has(gameId)) {
+      selectedGames.delete(gameId);
+      card.classList.remove("selected");
+      btn.className = "btn-card btn-add";
+      btn.innerText = "Agregar";
+    } else {
+      selectedGames.add(gameId);
+      card.classList.add("selected");
+      btn.className = "btn-card btn-remove";
+      btn.innerText = "Quitar";
+    }
+
+    card.classList.remove("popping");
+    void card.offsetWidth;
+    card.classList.add("popping");
+
+    updateUI();
+  }
+
+  function updateUI() {
+    let used = 0;
+    games.forEach(g => {
+      if (selectedGames.has(g.id)) used += g.size;
+    });
+
+    const labelMemory = document.getElementById("labelMemory");
+    const labelUsed = document.getElementById("labelUsed");
+    const labelAvail = document.getElementById("labelAvail");
+    const progressBar = document.getElementById("progressBar");
+    const statusText = document.getElementById("statusText");
+
+    labelMemory.innerText = currentCapacityLabel;
+    labelUsed.innerText = `${used.toFixed(1)} GB`;
+
+    if (maxStorage > 0) {
+      const avail = maxStorage - used;
+      labelAvail.innerText = `${avail >= 0 ? avail.toFixed(1) : 0} GB`;
+
+      const percent = Math.min((used / maxStorage) * 100, 100);
+      progressBar.style.width = `${percent}%`;
+
+      if (used > maxStorage) {
+        progressBar.classList.add("over");
+        statusText.innerText = `¡Espacio superado por ${(used - maxStorage).toFixed(1)} GB!`;
+        statusText.style.color = "var(--bar-over)";
+      } else {
+        progressBar.classList.remove("over");
+        statusText.innerText = selectedGames.size > 0 
+          ? `${selectedGames.size} juego(s) seleccionado(s).`
+          : "No hay juegos seleccionados.";
+        statusText.style.color = "var(--text-muted)";
+      }
+    } else {
+      labelAvail.innerText = "—";
+      progressBar.style.width = "0%";
+      statusText.innerText = "No hay juegos seleccionados.";
+    }
+  }
+
+  function sendWhatsApp() {
+    if (maxStorage === 0) {
+      alert("Primero debes seleccionar una memoria MicroSD.");
+      return;
+    }
+
+    if (selectedGames.size === 0) {
+      alert("Debes seleccionar al menos un juego de la lista.");
+      return;
+    }
+
+    const chosen = games.filter(g => selectedGames.has(g.id));
+    const totalSize = chosen.reduce((acc, g) => acc + g.size, 0);
+
+    if (totalSize > maxStorage) {
+      alert(`Has superado la capacidad de la memoria (${totalSize.toFixed(1)} GB de ${maxStorage} GB). Quita algunos juegos antes de enviar.`);
+      return;
+    }
+
+    let message = `*Pedido de Juegos Switch (MicroSD ${currentCapacityLabel})*\n`;
+    message += `Espacio utilizado: ${totalSize.toFixed(1)} / ${maxStorage} GB\n\n`;
+    message += `*Juegos seleccionados:*\n`;
+    chosen.forEach((g, i) => {
+      message += `${i + 1}. ${g.name} (${g.size.toFixed(1)} GB)\n`;
+    });
+
+    const phone = "569XXXXXXXX";
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  }
+</script>
+
+</body>
+</html>
