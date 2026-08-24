@@ -1097,24 +1097,32 @@
       return;
     }
 
-    let message = `*Pedido de Juegos Switch (MicroSD ${currentCapacityLabel})*\n`;
-    message += `Espacio utilizado: ${totalSize.toFixed(1)} / ${maxStorage} GB\n\n`;
-    message += `*Juegos seleccionados:*\n`;
-    chosen.forEach((g, i) => {
-      message += `${i + 1}. ${g.name} (${g.size.toFixed(1)} GB)\n`;
-    });
+    let message = `Hola! Quiero solicitar los siguientes juegos para Nintendo Switch.\n\n`;
+    message += `*Memoria:* ${currentCapacityLabel}\n`;
+    message += `*Espacio utilizado:* ${totalSize.toFixed(1)} GB de ${maxStorage} GB\n\n`;
+
+    if (chosen.length > 0) {
+      message += `*Juegos seleccionados:*\n`;
+      chosen.forEach((g, i) => {
+        message += `${i + 1}. ${g.name} — ${g.size.toFixed(1)} GB\n`;
+      });
+    }
 
     if (requested.length > 0) {
-      message += `\n*Juegos solicitados (tamaño pendiente):*\n`;
+      if (chosen.length > 0) message += `\n`;
+      message += `*Juegos solicitados:*\n`;
       requested.forEach(name => {
         message += `• ${name}\n`;
       });
     }
 
-    const phone = "569XXXXXXXX";
+    message += `\n¡Gracias!`;
+
+    const phone = "56992635856";
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
   }
+
 </script>
 
 </body>
