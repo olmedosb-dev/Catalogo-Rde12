@@ -1118,9 +1118,13 @@
 
     message += `\n¡Gracias!`;
 
+    // WhatsApp: número internacional, sin +, espacios ni guiones.
     const phone = "56992635856";
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
+
+    // Navegación directa: funciona mejor en GitHub Pages desde celulares
+    // y permite que Android/iOS entregue el enlace a la app de WhatsApp.
+    window.location.assign(url);
   }
 
 </script>
