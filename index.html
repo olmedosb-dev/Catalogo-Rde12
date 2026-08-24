@@ -3,21 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Elige tus Juegos</title>
+  <title>Catálogo Nintendo Switch</title>
   <style>
     :root {
-      --bg-main: #0d1117;
-      --bg-card: #161b22;
-      --bg-card-inner: #21262d;
-      --btn-blue: #58a6ff;
-      --btn-green: #238636;
-      --btn-remove: #da3633;
+      --bg-main: #0a0d14;
+      --bg-card: #141923;
+      --bg-card-inner: #1c2331;
+      --btn-blue: #00d2ff;
+      --btn-blue-glow: rgba(0, 210, 255, 0.4);
+      --btn-green: #25d366;
+      --btn-remove: #ff3860;
       --text-main: #f0f6fc;
-      --text-sub: #58a6ff;
+      --text-sub: #00d2ff;
       --text-muted: #8b949e;
-      --border-color: #30363d;
-      --bar-bg: #21262d;
-      --bar-over: #da3633;
+      --border-color: #263042;
+      --bar-bg: #1c2331;
+      --bar-over: #ff3860;
     }
 
     * {
@@ -45,43 +46,95 @@
       display: none !important;
     }
 
+    /* HEADER & LOGO */
+    .brand-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .brand-logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 8px;
+      border: 2px solid var(--btn-blue);
+      box-shadow: 0 0 16px var(--btn-blue-glow);
+    }
+
+    .brand-placeholder {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      box-shadow: 0 0 16px var(--btn-blue-glow);
+    }
+
     .step-header {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 700;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       color: var(--text-main);
+      text-align: center;
+    }
+
+    /* ANIMACIONES DE VISTA */
+    .view-fade-out {
+      animation: fadeOutView 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .view-fade-in {
+      animation: fadeInView 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeOutView {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.94); }
+    }
+
+    @keyframes fadeInView {
+      0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     /* VISTA 1: TARJETAS SD */
     .sd-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 14px;
     }
 
     .sd-card {
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 20px 14px;
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px 14px;
       text-align: center;
       cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .sd-card:active {
-      transform: scale(0.95);
+    .sd-card:hover, .sd-card:active {
+      transform: translateY(-4px) scale(1.02);
       border-color: var(--btn-blue);
+      box-shadow: 0 6px 20px var(--btn-blue-glow);
     }
 
     .sd-card h3 {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       margin-bottom: 4px;
       color: var(--text-main);
     }
 
     .sd-card span {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
     }
 
@@ -92,12 +145,11 @@
       gap: 12px;
     }
 
-    /* ANIMACIÓN POP */
     @keyframes popBounce {
       0% { transform: scale(1); }
-      30% { transform: scale(0.88); }
-      60% { transform: scale(1.10); }
-      80% { transform: scale(0.96); }
+      30% { transform: scale(0.90); }
+      60% { transform: scale(1.08); }
+      80% { transform: scale(0.97); }
       100% { transform: scale(1); }
     }
 
@@ -117,11 +169,10 @@
     }
 
     .game-card.selected {
-      border-color: #58a6ff;
-      box-shadow: 0 0 16px rgba(88, 166, 255, 0.4);
+      border-color: var(--btn-blue);
+      box-shadow: 0 0 16px var(--btn-blue-glow);
     }
 
-    /* CONTENEDOR PROPORCIÓN NINTENDO SWITCH */
     .game-photo-box {
       width: 100%;
       aspect-ratio: 3 / 5;
@@ -170,7 +221,7 @@
     .game-size-text {
       font-size: 0.8rem;
       color: var(--text-sub);
-      font-weight: 500;
+      font-weight: 600;
     }
 
     /* BOTONES */
@@ -180,7 +231,7 @@
       border-radius: 8px;
       border: none;
       font-size: 0.9rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: background 0.15s, transform 0.1s;
     }
@@ -190,8 +241,9 @@
     }
 
     .btn-add {
-      background: #60c5ff;
-      color: #0d1117;
+      background: linear-gradient(135deg, #00d2ff, #0072ff);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--btn-blue-glow);
     }
 
     .btn-remove {
@@ -205,11 +257,11 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: #161b22;
+      background: #141923;
       border-top: 1px solid var(--border-color);
-      border-radius: 20px 20px 0 0;
+      border-radius: 22px 22px 0 0;
       padding: 18px 16px 20px 16px;
-      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.9);
       z-index: 100;
       max-width: 480px;
       margin: 0 auto;
@@ -223,18 +275,10 @@
       margin-bottom: 8px;
     }
 
-    .sheet-row .label {
-      color: var(--text-main);
-    }
-
-    .sheet-row .val {
-      color: var(--text-main);
-    }
-
     .sheet-progress-container {
       width: 100%;
-      height: 7px;
-      background: #21262d;
+      height: 8px;
+      background: #1c2331;
       border-radius: 4px;
       overflow: hidden;
       margin: 12px 0 10px 0;
@@ -243,7 +287,7 @@
     .sheet-progress-bar {
       height: 100%;
       width: 0%;
-      background: #238636;
+      background: linear-gradient(90deg, #00d2ff, #25d366);
       transition: width 0.3s ease, background-color 0.3s ease;
     }
 
@@ -259,11 +303,11 @@
 
     .btn-whatsapp {
       width: 100%;
-      background: #2ea043;
+      background: linear-gradient(135deg, #25d366, #128c7e);
       color: #ffffff;
       border: none;
       padding: 14px;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
@@ -271,35 +315,44 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: background 0.15s, transform 0.1s;
+      transition: all 0.15s;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
     }
 
     .btn-whatsapp:active {
-      background: #238636;
       transform: scale(0.98);
+      filter: brightness(0.9);
     }
   </style>
 </head>
 <body>
 
 <div class="app-container">
+  <!-- ENCABEZADO CON LOGO -->
+  <div class="brand-header">
+    <div id="logoContainer">
+      <img src="logo.png" class="brand-logo" alt="Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="brand-placeholder" style="display: none;">🎮</div>
+    </div>
+  </div>
+
   <!-- PASO 1: SELECCIONAR MEMORIA -->
   <section id="step1">
     <div class="step-header">1. Selecciona tu MicroSD</div>
     <div class="sd-grid">
-      <div class="sd-card" onclick="selectSD(119, '128 GB')">
+      <div class="sd-card" onclick="selectSD(119, '128 GB', this)">
         <h3>128 GB</h3>
         <span>~119 GB útiles</span>
       </div>
-      <div class="sd-card" onclick="selectSD(238, '256 GB')">
+      <div class="sd-card" onclick="selectSD(238, '256 GB', this)">
         <h3>256 GB</h3>
         <span>~238 GB útiles</span>
       </div>
-      <div class="sd-card" onclick="selectSD(476, '512 GB')">
+      <div class="sd-card" onclick="selectSD(476, '512 GB', this)">
         <h3>512 GB</h3>
         <span>~476 GB útiles</span>
       </div>
-      <div class="sd-card" onclick="selectSD(953, '1 TB')">
+      <div class="sd-card" onclick="selectSD(953, '1 TB', this)">
         <h3>1 TB</h3>
         <span>~953 GB útiles</span>
       </div>
@@ -316,16 +369,16 @@
 <!-- MODAL FLOTANTE INFERIOR -->
 <div class="floating-sheet">
   <div class="sheet-row">
-    <span class="label">Memoria:</span>
-    <span class="val" id="labelMemory">No seleccionada</span>
+    <span>Memoria:</span>
+    <span id="labelMemory">No seleccionada</span>
   </div>
   <div class="sheet-row">
-    <span class="label">Espacio utilizado:</span>
-    <span class="val" id="labelUsed">0 GB</span>
+    <span>Espacio utilizado:</span>
+    <span id="labelUsed">0 GB</span>
   </div>
   <div class="sheet-row">
-    <span class="label">Espacio disponible:</span>
-    <span class="val" id="labelAvail">—</span>
+    <span>Espacio disponible:</span>
+    <span id="labelAvail">—</span>
   </div>
 
   <div class="sheet-progress-container">
@@ -340,6 +393,107 @@
 </div>
 
 <script>
+  // ==========================================
+  // MOTOR DE AUDIO HÁPTICO ASMR / TIK
+  // ==========================================
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playSound(type) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'select') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(520, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    } else if (type === 'add') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(620, now);
+      osc.frequency.exponentialRampToValueAtTime(1080, now + 0.09);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.09);
+      osc.start(now);
+      osc.stop(now + 0.09);
+    } else if (type === 'remove') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(450, now);
+      osc.frequency.exponentialRampToValueAtTime(260, now + 0.08);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    }
+  }
+
+  // EFECTO TIK / HÁPTICO SUTIL Y SATISFACTORIO
+  let lastScrollY = window.scrollY;
+  let lastTickPos = window.scrollY;
+  let lastScrollTime = Date.now();
+
+  function playSatisfyingTick(speed) {
+    if (audioCtx.state === 'suspended') return;
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1400, audioCtx.currentTime);
+
+    osc.connect(gain);
+    gain.connect(filter);
+    filter.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    const baseFreq = 950 + Math.min(speed * 200, 300);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(baseFreq, now);
+    osc.frequency.exponentialRampToValueAtTime(300, now + 0.009);
+
+    gain.gain.setValueAtTime(0.035, now);
+    gain.gain.linearRampToValueAtTime(0.0001, now + 0.009);
+
+    osc.start(now);
+    osc.stop(now + 0.009);
+  }
+
+  window.addEventListener('scroll', () => {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    const currentY = window.scrollY;
+    const now = Date.now();
+    const dt = Math.max(now - lastScrollTime, 1);
+    const dist = Math.abs(currentY - lastScrollY);
+    const speed = dist / dt;
+
+    const tickDistance = 36;
+
+    if (Math.abs(currentY - lastTickPos) >= tickDistance) {
+      playSatisfyingTick(speed);
+      lastTickPos = currentY;
+    }
+
+    lastScrollY = currentY;
+    lastScrollTime = now;
+  }, { passive: true });
+
+  // ==========================================
+  // LISTA DE JUEGOS
+  // ==========================================
   const games = [
     { id: 1, name: "Capcom Fighting Collection 2", size: 5.0, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/BEDTB/front.png" },
     { id: 2, name: "Donkey Kong Country Returns", size: 6.8, img: "https://cdn.switch-images-julio.com/file/switch-images-julio/_resized/BDLWA/front.png" },
@@ -379,16 +533,27 @@
   let currentCapacityLabel = "No seleccionada";
   let selectedGames = new Set();
 
-  function selectSD(gbLimit, label) {
+  function selectSD(gbLimit, label, cardElem) {
+    playSound('select');
     maxStorage = gbLimit;
     currentCapacityLabel = label;
     selectedGames.clear();
 
-    document.getElementById("step1").classList.add("hidden");
-    document.getElementById("step2").classList.remove("hidden");
+    const step1 = document.getElementById("step1");
+    const step2 = document.getElementById("step2");
 
-    renderGamesInitial();
-    updateUI();
+    step1.classList.add("view-fade-out");
+
+    setTimeout(() => {
+      step1.classList.add("hidden");
+      step1.classList.remove("view-fade-out");
+
+      step2.classList.remove("hidden");
+      step2.classList.add("view-fade-in");
+
+      renderGamesInitial();
+      updateUI();
+    }, 320);
   }
 
   function renderGamesInitial() {
@@ -422,11 +587,13 @@
     const btn = document.getElementById(`btn-${gameId}`);
 
     if (selectedGames.has(gameId)) {
+      playSound('remove');
       selectedGames.delete(gameId);
       card.classList.remove("selected");
       btn.className = "btn-card btn-add";
       btn.innerText = "Agregar";
     } else {
+      playSound('add');
       selectedGames.add(gameId);
       card.classList.add("selected");
       btn.className = "btn-card btn-remove";
